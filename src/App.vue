@@ -1,5 +1,43 @@
 <script lang="ts" setup></script>
 
-<template></template>
+<template>
+  <main>
+    <div class="container">
+      <h1>Gym-Booking-System</h1>
+      <router-view></router-view>
+    </div>
+  </main>
+</template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+main {
+  width: 100vw;
+  /* min-height 
+  1.使全屏可有背景色 
+  2.不限制表单长度，防止出现滚动条 
+  3.表单长度高于100vh时，背景色伴随表单所在区域 */
+  min-height: 100vh;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  background: rgb(203, 210, 240);
+}
+
+.container {
+  width: 60%;
+  min-height: 60vh;
+  min-width: 350px;
+  max-width: 400px;
+  box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  padding: 48px 28px;
+  background-color: rgb(245, 246, 252);
+}
+
+/* 标题 */
+h1 {
+  font-size: 26px;
+  text-align: center;
+  margin: 24px 0;
+}
+</style>
