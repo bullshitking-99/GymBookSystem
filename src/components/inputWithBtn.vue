@@ -1,27 +1,23 @@
 <!-- 
 组件说明：
     props：
-        modelValue -- input使用的v-model数据
+        inputValue -- 与上层组件进行v-model绑定 
         placeholder -- input placeholder
-    event：
-        btnClicked -- button触发时emit的响应事件
+    emits：
+        btnClicked -- button点击时的响应事件，向上传递当前组件实例的input.value
     slot:
         默认插槽 -- 传入button内，建议为图标或动态组件
  -->
 <script lang="ts" setup>
 import { PropType, ref, useAttrs } from "vue";
-import { stringifyQuery } from "vue-router";
 
 const props = defineProps({
-  modelValue: String as PropType<string>,
+  inputValue: String as PropType<string>,
   placeholder: String as PropType<string>,
 });
 
-const emits = defineEmits(["btnClicked"]);
-
-const btnClicked = () => {
-  emits("btnClicked", props.modelValue);
-};
+// input是否获得焦点
+const onFocus = ref(false);
 
 // 因为setup的私有特性，需要显式向父组件暴露实例中的方法
 const input = ref<HTMLInputElement | null>(null);
@@ -31,17 +27,26 @@ const input_focus = () => {
 defineExpose({
   input_focus,
 });
+
+// Emit 向上传递input中的值
+const emit = defineEmits(["btnClicked", "update:inputValue"]);
+// const btnClicked = () => {
+//   emit("btnClicked", input.value);
+// };
 </script>
 
 <template>
-  <main>
+  <main :class="{ input_get_focus: onFocus }">
     <input
       type="text"
-      v-model="modelValue"
       :placeholder="placeholder"
       ref="input"
+      :value="inputValue"
+      @focus="onFocus = true"
+      @blur="onFocus = false"
+      @input="$emit('update:inputValue', input?.value)"
     />
-    <button @click="btnClicked">
+    <button @click="$emit('btnClicked', input?.value)">
       <slot></slot>
     </button>
   </main>
@@ -56,6 +61,13 @@ main {
   position: relative;
   width: 85%;
   margin: 0 auto;
+  border-radius: 48px;
+  transition: all 0.5s;
+
+  .input_get_focus {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.15);
+  }
 
   input {
     /* 上右下左 
@@ -85,18 +97,12 @@ main {
     position: absolute;
     right: 0;
 
-    cursor: pointer;
-
-    .plus {
-      display: block;
-      width: 100%;
-      height: 100%;
-      /* 这里为什么要采用同色渐变呢 */
-      background: linear-gradient(#fff, #fff), linear-gradient(#fff, #fff);
-      background-size: 50% 2px, 2px 50%;
-      background-position: center;
-      background-repeat: no-repeat;
+    transition: all 0.2s;
+    &:active {
+      transform: scale(0.85);
     }
+
+    cursor: pointer;
   }
 }
 </style>

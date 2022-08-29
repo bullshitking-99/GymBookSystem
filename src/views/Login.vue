@@ -1,13 +1,5 @@
-<script lang="ts">
-// 使用普通的 <script> 来声明选项
-// 禁止透传attrs自动赋予根元素，在组件内部手动指定属性继承元素
-export default {
-  inheritAttrs: false,
-};
-</script>
-
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 import { useApi } from "../hooks/api/useApi";
 import inputWithBtn from "../components/inputWithBtn.vue";
 
@@ -21,20 +13,26 @@ const userInfo = ref({
 // 组件加载时 focus account_input
 const account_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
 onMounted(() => {
-  console.log(account_input.value);
   account_input.value?.input_focus();
 });
 
 // account_input 按钮点击方法 focus password_input
 const password_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
-const inputSwitch = () => {
+const inputSwitch = (account: string) => {
   password_input.value?.input_focus();
 };
 
-const loginHandler = () => {
+const loginHandler = (password: string) => {
+  console.log(userInfo.value);
+
   // 发送登录请求验证用户信息
-  loginAuthen("http://shaowei.tech:8080/api/user/login", userInfo.value);
+  loginAuthen("http://shaowei.tech:8080/api/user/login", userInfo.value).then(
+    (res) => (declaration.value = res)
+  );
 };
+
+// 页面声明及状态广播
+const declaration = ref("本系统纯属自娱自乐");
 </script>
 
 <template>
@@ -42,25 +40,29 @@ const loginHandler = () => {
 
   <div style="height: 2rem"></div>
 
-  <inputWithBtn
-    :modelValue="userInfo.account"
-    placeholder="ACCOUNT"
-    @btnClicked="inputSwitch"
-    ref="account_input"
-  >
-    <span class="arrow" style="content: '\21A1'">&#8609;</span>
-  </inputWithBtn>
+  <Transition>
+    <inputWithBtn
+      placeholder="ACCOUNT"
+      @btnClicked="inputSwitch"
+      ref="account_input"
+      v-model:inputValue="userInfo.account"
+    >
+      <span class="arrow" style="content: '\21A1'">&#8609;</span>
+    </inputWithBtn>
+  </Transition>
 
   <div style="height: 2rem"></div>
 
-  <inputWithBtn
-    :modelValue="userInfo.password"
-    placeholder="PASSWORD"
-    @btnClicked="loginHandler"
-    ref="password_input"
-  >
-    <span class="arrow" style="content: '\21A0'">&#8608;</span>
-  </inputWithBtn>
+  <Transition>
+    <inputWithBtn
+      placeholder="PASSWORD"
+      @btnClicked="loginHandler"
+      ref="password_input"
+      v-model:inputValue="userInfo.password"
+    >
+      <span class="arrow" style="content: '\21A0'">&#8608;</span>
+    </inputWithBtn>
+  </Transition>
 
   <div style="height: 5rem"></div>
 
@@ -69,7 +71,7 @@ const loginHandler = () => {
   <div style="height: 2rem"></div>
 
   <!-- footer 系统说明 -->
-  <div class="declaration">本系统纯属自娱自乐</div>
+  <div class="declaration">{{ declaration }}</div>
 </template>
 
 <style scoped lang="scss">
