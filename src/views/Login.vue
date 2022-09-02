@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from "vue";
-import { useApi } from "../hooks/api/useApi";
+import UseApi from "../hooks/api/useApi";
 import inputWithBtn from "../components/inputWithBtn.vue";
+import { useRouter } from "vue-router";
 
-const { loginAuthen } = useApi();
+const { loginAuthen } = UseApi();
 
 const userInfo = ref({
   account: "",
   password: "",
 });
+const router = useRouter();
 
 // 组件加载时 focus account_input
 const account_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
@@ -27,12 +29,17 @@ const loginHandler = (password: string) => {
 
   // 发送登录请求验证用户信息
   loginAuthen("http://shaowei.tech:8080/api/user/login", userInfo.value).then(
-    (res) => (declaration.value = res)
+    (res) => {
+      declaration.value = res.message;
+      if (res.code === 2000) {
+        router.push("/form");
+      }
+    }
   );
 };
 
 // 页面声明及状态广播
-const declaration = ref("本系统纯属自娱自乐");
+const declaration: Ref<string> = ref("本系统纯属自娱自乐");
 </script>
 
 <template>

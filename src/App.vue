@@ -1,4 +1,16 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { onMounted, onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+import { useLocalStorage } from "../src/hooks/api/useApi";
+
+const router = useRouter();
+
+onBeforeMount(() => {
+  const { getLoginToken } = useLocalStorage();
+
+  if (getLoginToken()) router.push("/form");
+});
+</script>
 
 <template>
   <main>
