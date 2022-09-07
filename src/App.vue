@@ -33,23 +33,22 @@ main {
   justify-items: center;
   align-items: center;
   background: rgb(203, 210, 240);
-}
+  .container {
+    width: 60%;
+    min-height: 60vh;
+    min-width: 350px;
+    max-width: 400px;
+    box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 24px;
+    padding: 48px 28px;
+    background-color: rgb(245, 246, 252);
 
-.container {
-  width: 60%;
-  min-height: 60vh;
-  min-width: 350px;
-  max-width: 400px;
-  box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.15);
-  border-radius: 24px;
-  padding: 48px 28px;
-  background-color: rgb(245, 246, 252);
-}
-
-/* 标题 */
-h1 {
-  font-size: 26px;
-  text-align: center;
-  margin: 24px 0;
+    /* 标题 */
+    h1 {
+      font-size: 26px;
+      text-align: center;
+      margin: 24px 0;
+    }
+  }
 }
 </style>

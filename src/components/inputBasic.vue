@@ -34,52 +34,71 @@ const emit = defineEmits(["inputEnter", "update:inputValue"]);
 
 <template>
   <Transition>
-    <main :class="{ input_get_focus: onFocus }">
-      <input
-        type="text"
-        :placeholder="placeholder"
-        ref="input"
-        :value="inputValue"
-        @focus="onFocus = true"
-        @blur="onFocus = false"
-        @input="$emit('update:inputValue', input?.value)"
-        @keyup.enter="$emit('inputEnter')"
-      />
-    </main>
+    <div class="inputBasic">
+      <div class="label">
+        <label for="input">
+          {{ placeholder }}
+        </label>
+      </div>
+
+      <div class="input">
+        <input
+          id="input"
+          type="text"
+          :placeholder="placeholder"
+          ref="input"
+          :value="inputValue"
+          :class="{ input_get_focus: onFocus }"
+          @focus="onFocus = true"
+          @blur="onFocus = false"
+          @input="$emit('update:inputValue', input?.value)"
+          @keyup.enter="$emit('inputEnter')"
+        />
+      </div>
+    </div>
   </Transition>
 </template>
 
 <style scoped lang="scss">
-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  position: relative;
-  width: 85%;
-  margin: 0 auto;
-  border-radius: 24px;
-  transition: all 0.5s;
+.inputBasic {
+  width: 100%;
 
-  .input_get_focus {
-    border: 2px solid black;
+  .label {
+    width: 100%;
+    height: 20px;
+    position: relative;
+    margin-bottom: 5px;
+
+    label {
+      position: absolute;
+      left: 45px;
+      opacity: 0.8;
+      font-size: 20px;
+    }
   }
 
-  input {
-    /* 上右下左 
+  .input {
+    width: 100%;
+    text-align: center;
+    transition: all 0.1s;
+
+    input {
+      /* 上右下左 
       左边 18 是因为椭圆边框会遮住光标
       右边 52 是因为要放一个添加按钮
       上下 16 为了提升输入框高度*/
-    padding: 16px 52px 16px 22px;
+      padding: 5px 12px 5px 12px;
 
-    /* 使input获取焦点时无边框加粗 */
-    outline: none;
-    width: 100%;
-    font-size: 18px;
-    color: #626262;
-    border: none;
-    border-radius: 24px;
-    box-shadow: 0 0 24 rgba(0, 0, 0, 0.08);
+      /* 使input获取焦点时无边框加粗 */
+      outline: none;
+      width: 80%;
+      font-size: 18px;
+      border-radius: 12px;
+
+      .input_get_focus {
+        border: 2px solid black;
+      }
+    }
   }
 }
 </style>
