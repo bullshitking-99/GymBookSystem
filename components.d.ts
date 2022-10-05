@@ -7,14 +7,17 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AAlert: typeof import('ant-design-vue/es')['Alert']
     AButton: typeof import('ant-design-vue/es')['Button']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
-    AInput: typeof import('ant-design-vue/es')['Input']
+    ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
+    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     Arrow: typeof import('./src/components/arrow.vue')['default']
     ASelect: typeof import('ant-design-vue/es')['Select']
     ASlider: typeof import('ant-design-vue/es')['Slider']
+    ASpin: typeof import('ant-design-vue/es')['Spin']
     ASwitch: typeof import('ant-design-vue/es')['Switch']
     InputBasic: typeof import('./src/components/inputBasic.vue')['default']
     InputWithBtn: typeof import('./src/components/inputWithBtn.vue')['default']

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue";
+import { h, onMounted, Ref, ref, watch } from "vue";
 import UseApi from "../hooks/api/useApi";
 import inputWithBtn from "../components/inputWithBtn.vue";
 import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
+import { LoadingOutlined } from "@ant-design/icons-vue";
 
 const { loginAuthen } = UseApi();
 
@@ -24,22 +26,48 @@ const inputSwitch = (account: string) => {
   password_input.value?.input_focus();
 };
 
+// 页面声明及状态广播
+const declaration: Ref<string> = ref("本系统纯属自娱自乐");
+// 控制声明文字抖动效果
+const shaking: Ref<boolean> = ref(false);
+
+// 登录按钮等待效果
+const isSpin = ref(false);
+const indicator = h(LoadingOutlined, {
+  style: {
+    fontSize: "20px",
+    color: "white",
+  },
+  spin: true,
+});
+const delayTime = 300;
+
 const loginHandler = (password: string) => {
-  console.log(userInfo.value);
+  // console.log(userInfo.value);
+
+  // 显示等待状态
+  isSpin.value = true;
+
+  // 清空抖动状态，收到响应时启动抖动
+  shaking.value = false;
 
   // 发送登录请求验证用户信息
-  loginAuthen("http://shaowei.tech:8080/api/user/login", userInfo.value).then(
-    (res) => {
+  loginAuthen("api/user/login", userInfo.value)
+    .then((res) => {
       declaration.value = res.message;
       if (res.code === 2000) {
         router.push("/form");
       }
-    }
-  );
+    })
+    .catch(() => {
+      // message.error(err.message);
+      declaration.value = "未知错误，请重试一次或联系管理员";
+    })
+    .finally(() => {
+      isSpin.value = false;
+      shaking.value = true;
+    });
 };
-
-// 页面声明及状态广播
-const declaration: Ref<string> = ref("本系统纯属自娱自乐");
 </script>
 
 <template>
@@ -67,7 +95,8 @@ const declaration: Ref<string> = ref("本系统纯属自娱自乐");
       ref="password_input"
       v-model:inputValue="userInfo.password"
     >
-      <span class="arrow" style="content: '\21A0'">&#8608;</span>
+      <a-spin :indicator="indicator" v-if="isSpin" :delay="delayTime"></a-spin>
+      <span v-else class="arrow" style="content: '\21A0'">&#8608;</span>
     </inputWithBtn>
   </Transition>
 
@@ -78,7 +107,7 @@ const declaration: Ref<string> = ref("本系统纯属自娱自乐");
   <div style="height: 2rem"></div>
 
   <!-- footer 系统说明 -->
-  <div class="declaration">{{ declaration }}</div>
+  <div class="declaration" :class="{ shaking }">{{ declaration }}</div>
 </template>
 
 <style scoped lang="scss">
@@ -103,5 +132,45 @@ hr {
 .declaration {
   text-align: center;
   opacity: 0.7;
+}
+
+// 文字抖动效果
+.shaking {
+  color: #e40438;
+  animation-name: shaking;
+  animation-duration: 0.5s;
+}
+
+@keyframes shaking {
+  10% {
+    transform: translateX(2px);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  30% {
+    transform: translateX(2px);
+  }
+  40% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  70% {
+    transform: translateX(2px);
+  }
+  80% {
+    transform: translateX(-2px);
+  }
+  90% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 </style>

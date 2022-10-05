@@ -45,6 +45,7 @@ const emit = defineEmits(["btnClicked", "update:inputValue"]);
       @focus="onFocus = true"
       @blur="onFocus = false"
       @input="$emit('update:inputValue', input?.value)"
+      @keydown.enter="$emit('btnClicked')"
     />
     <button @click="$emit('btnClicked', input?.value)">
       <slot></slot>

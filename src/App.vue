@@ -6,8 +6,8 @@ import { useLocalStorage } from "../src/hooks/api/useApi";
 const router = useRouter();
 
 onBeforeMount(() => {
+  // 存在登录信息自动跳转
   const { getLoginToken } = useLocalStorage();
-
   if (getLoginToken()) router.push("/form");
 });
 </script>

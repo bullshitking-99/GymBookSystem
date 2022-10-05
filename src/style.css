@@ -5,7 +5,8 @@
   font-family: "Times New Roman", Times, serif;
 }
 .ant-picker {
-  width: 100%;
+  width: 75%;
+  margin-left: 4% !important;
 }
 .ant-form-item-label {
   font-weight: bold;
@@ -14,5 +15,8 @@
 @media only screen and (max-width: 450px) {
   .ant-form-item {
     width: 90%;
+  }
+  .ant-picker {
+    margin-left: 8% !important;
   }
 }

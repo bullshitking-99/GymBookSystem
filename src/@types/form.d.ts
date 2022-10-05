@@ -2,25 +2,22 @@ import { Dayjs } from "dayjs";
 
 interface IformState {
   isOrder: boolean;
+  orderType: "羽毛球" | "健身房" | "";
+  isAssignDate: boolean;
   date: string;
-  beginTime: number;
-  finishTime: number;
+  gym_beginTime: number;
+  gym_finishTime: number;
+  bmt_beginTime: number;
+  bmt_finishTime: number;
   prioritySites: number[];
+  isOrderWeekend: boolean;
+  enhanceMode: boolean;
 }
 
-interface Iform_request_params {
-  isOrder: boolean;
-  date: string;
-  beginTime: number;
-  durationTime: number;
-  prioritySites: number[];
-}
-
-enum SliderMarks {
-  0 = 13,
-  20 = 14,
-  40 = 15,
-  60 = 16,
-  80 = 17,
-  100 = 18,
-}
+// interface Iform_request_params {
+//   isOrder: boolean;
+//   date: string;
+//   beginTime: number;
+//   durationTime: number;
+//   prioritySites: number[];
+// }

@@ -6,17 +6,42 @@ interface IuserInfo {
   password: string;
 }
 
-interface ILoginResponse {
+interface IGymOrder {
+  orderType: "健身房";
+  isOrder: boolean;
+  isAssignDate: boolean;
+  orderDate: string;
+  beginTime: number;
+  endTime: number;
+  timeIndex: number;
+  enhanceMode: boolean;
+}
+
+interface IBadmintonOrder {
+  orderType: "羽毛球";
+  isOrder: boolean;
+  isAssignDate: boolean;
+  orderDate: string;
+  beginTime: number;
+  endTime: number;
+  prioritySites: number[];
+  priorityDuration: number;
+  isOrderWeekend: boolean;
+}
+
+interface IResponse {
   message: string;
   code: number;
   data: string;
 }
 
 interface IuseApi {
-  loginAuthen: (url: string, body: IuserInfo) => Promise<ILoginResponse>;
+  loginAuthen: (url: string, body: IuserInfo) => Promise<IResponse>;
+  addOrderPlan: (url: string, body: IorderPlan) => Promise<IResponse>;
 }
 
 interface IUseLocalStorage {
   getLoginToken: () => TOKEN | "";
   setLoginToken: (token: string) => void;
+  removeLoginToken: () => void;
 }
