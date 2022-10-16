@@ -15,6 +15,7 @@ interface IGymOrder {
   endTime: number;
   timeIndex: number;
   enhanceMode: boolean;
+  isOrderWeekend: boolean;
 }
 
 interface IBadmintonOrder {
@@ -32,12 +33,13 @@ interface IBadmintonOrder {
 interface IResponse {
   message: string;
   code: number;
-  data: string;
+  data: string | object;
 }
 
 interface IuseApi {
-  loginAuthen: (url: string, body: IuserInfo) => Promise<IResponse>;
-  addOrderPlan: (url: string, body: IorderPlan) => Promise<IResponse>;
+  loginAuthen: (body: IuserInfo) => Promise<IResponse>;
+  addOrderPlan: (body: IorderPlan) => Promise<IResponse>;
+  getOrderPlan: (body: "健身房" | "羽毛球") => Promise<IResponse>;
 }
 
 interface IUseLocalStorage {

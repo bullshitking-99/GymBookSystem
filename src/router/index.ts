@@ -6,7 +6,14 @@ const history = createWebHistory();
 
 const routes = [
   { path: "/", component: Login },
-  { path: "/form", component: Form },
+  {
+    path: "/form",
+    name: "form",
+    component: Form,
+    props: (route: { params: { res: string } }) => {
+      orderPlan: route.params.res;
+    },
+  },
 ];
 
 const router = createRouter({

@@ -1,14 +1,30 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
-import { useLocalStorage } from "../src/hooks/api/useApi";
+import useApi, { useLocalStorage } from "../src/hooks/api/useApi";
 
 const router = useRouter();
+const { getLoginToken } = useLocalStorage();
+const { getOrderPlan } = useApi();
 
-onBeforeMount(() => {
-  // 存在登录信息自动跳转
-  const { getLoginToken } = useLocalStorage();
-  if (getLoginToken()) router.push("/form");
+onBeforeMount(async () => {
+  if (getLoginToken()) {
+    // 获取用户预约数据
+    // promise.all 获取羽毛球和健身房数据
+    const orderRequest: Array<Promise<IResponse>> = [
+      getOrderPlan("健身房"),
+      getOrderPlan("羽毛球"),
+    ];
+    const res = await Promise.all(orderRequest);
+    console.log(res);
+
+    // token过期则需要登录
+    if (res[0].code === 2001) router.push("/");
+    // 成功请求则转至表单页，因参数较多，将数据存入session中
+    if (res[0].code === 2000) {
+      router.push("/form");
+    }
+  }
 });
 </script>
 

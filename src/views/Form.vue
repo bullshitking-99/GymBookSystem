@@ -9,7 +9,8 @@ import { LoadingOutlined } from "@ant-design/icons-vue";
 import { h } from "vue";
 import { message } from "ant-design-vue";
 import { computed } from "@vue/reactivity";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { string } from "vue-types";
 
 const router = useRouter();
 
@@ -128,6 +129,7 @@ const submitForm = () => {
       endTime: formState.value.gym_finishTime,
       timeIndex: CalTimeIndex(formState.value.gym_beginTime),
       enhanceMode: formState.value.enhanceMode,
+      isOrderWeekend: formState.value.isOrderWeekend,
     };
     console.log("健身房预约：", gym_form);
 
@@ -178,7 +180,7 @@ const submitForm = () => {
     if (!formCheck(order)) return;
 
     const { addOrderPlan } = UseApi();
-    addOrderPlan("api/badminton/addOrderPlan", order)
+    addOrderPlan(order)
       .finally(() => (isSpin.value = false))
       .then((res) => {
         switch (res.code) {
@@ -312,8 +314,8 @@ const submitForm = () => {
       <a-switch
         :disabled="isDisabled"
         v-model:checked="formState.enhanceMode"
-        checked-children="致命但迷人"
-        un-checked-children="精准却欠缺"
+        checked-children="预约剩余时段"
+        un-checked-children="仅预约该时段"
       ></a-switch>
     </a-form-item>
 
@@ -323,11 +325,11 @@ const submitForm = () => {
         v-model:checked="formState.isOrderWeekend"
         :checked-children="
           formState.orderType === '健身房'
-            ? `I'm Tough! Bro~`
-            : `I'm Rich! Bitch~`
+            ? `求道之人不问寒暑`
+            : `精诚所至金石为开`
         "
         :un-checked-children="
-          formState.orderType === '健身房' ? '不，我很基巴懒' : '不，我很基巴穷'
+          formState.orderType === '健身房' ? '不，劳逸结合' : '不，家境贫寒'
         "
       ></a-switch>
     </a-form-item>

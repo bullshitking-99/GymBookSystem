@@ -52,7 +52,7 @@ const loginHandler = (password: string) => {
   shaking.value = false;
 
   // 发送登录请求验证用户信息
-  loginAuthen("api/user/login", userInfo.value)
+  loginAuthen(userInfo.value)
     .then((res) => {
       declaration.value = res.message;
       if (res.code === 2000) {

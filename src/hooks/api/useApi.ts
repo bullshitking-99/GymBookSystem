@@ -7,9 +7,9 @@ function useApi(): IuseApi {
    * 登录页请求用户验证
    * method为post
    */
-  async function loginAuthen(url: string, body: IuserInfo): Promise<IResponse> {
+  async function loginAuthen(body: IuserInfo): Promise<IResponse> {
     // 发送登录验证请求
-    let response = await fetch(baseUrl + url, {
+    let response = await fetch(baseUrl + "api/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -20,7 +20,7 @@ function useApi(): IuseApi {
     let res: IResponse = await response.json();
 
     const { setLoginToken } = useLocalStorage();
-    if (res.code === 2000) setLoginToken(res.data);
+    if (res.code === 2000) setLoginToken(res.data as string);
 
     return { message: res.message, code: res.code, data: res.data };
   }
@@ -29,12 +29,11 @@ function useApi(): IuseApi {
    * 表单页发送预约请求
    */
   async function addOrderPlan(
-    url: string,
     body: IGymOrder | IBadmintonOrder
   ): Promise<IResponse> {
     const { getLoginToken } = useLocalStorage();
     // 发送预约表单请求
-    let response = await fetch(baseUrl + url, {
+    let response = await fetch(baseUrl + "api/badminton/addOrderPlan", {
       method: "POST",
       headers: {
         token: getLoginToken(),
@@ -52,9 +51,31 @@ function useApi(): IuseApi {
     return { message: res.message, code: res.code, data: res.data };
   }
 
+  async function getOrderPlan(body: "健身房" | "羽毛球"): Promise<IResponse> {
+    const { getLoginToken } = useLocalStorage();
+    // 发送预约表单请求
+    let response = await fetch(
+      baseUrl + "api/badminton/getOrderPlan" + `?orderType=${body}`,
+      {
+        method: "Get",
+        headers: {
+          token: getLoginToken(),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    let res: IResponse = await response.json();
+
+    // console.log("获取用户预约请求响应：", res);
+
+    return { message: res.message, code: res.code, data: res.data };
+  }
+
   return {
     loginAuthen,
     addOrderPlan,
+    getOrderPlan,
   };
 }
 
