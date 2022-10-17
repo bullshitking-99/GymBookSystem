@@ -10,10 +10,68 @@ import { h } from "vue";
 import { message } from "ant-design-vue";
 import { computed } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
-import { string } from "vue-types";
+import useApi from "../hooks/api/useApi";
 
 const router = useRouter();
+const OrderPlan = "OrderPlan";
 
+// 请求预约信息，更新表单状态
+(function UpdateForm(): void {
+  // 判断session-OrderPlan是否存在
+  const hasOrderPlan: boolean = sessionStorage.getItem(OrderPlan) !== null;
+
+  // OrderPlan存在 - 更新表单状态
+  if (hasOrderPlan) {
+    setFormState();
+  }
+
+  // orderPlan不存在 - 发起请求获取OrderPlan
+  if (!hasOrderPlan) {
+    (async () => {
+      const { getOrderPlan } = useApi();
+      // 获取用户预约数据
+      // promise.all 获取羽毛球和健身房数据
+      const orderRequest: Array<Promise<IResponse>> = [
+        getOrderPlan("健身房"),
+        getOrderPlan("羽毛球"),
+      ];
+
+      // loading start
+
+      const res = await Promise.all(orderRequest);
+      console.log(res);
+
+      // loading end
+
+      // token过期则需要登录
+      if (res[0].code === 2001) {
+        message.warn("获取预约信息失败，请重新登录");
+        router.push("/");
+      }
+      // 成功请求则将数据存入session中，更新表单状态
+      if (res[0].code === 2000) {
+        // 返回data为空-新用户-使用表单初始状态
+        // data不为空-老用户-更新表单状态
+        if (res[0].data !== []) {
+          // setSession 将pinia持久化存储则不需要这一步
+          sessionStorage.setItem(OrderPlan, JSON.stringify(res));
+          // UpdateForm
+          setFormState();
+        }
+      }
+    })();
+  }
+
+  /**
+   * 设置表单初始状态
+   * 需要分隔一下数据环境，存于pinia中，并使用session进行持久化存储
+   */
+  function setFormState(): void {
+    console.log("form update!");
+  }
+})();
+
+// 表单控制变量
 const formState = ref<IformState>({
   isOrder: true,
   orderType: "健身房",
@@ -31,20 +89,13 @@ const formState = ref<IformState>({
 // 开启预约开关，控制全局表单是否可选
 const isDisabled = ref(false);
 
-// 监听选择场馆，动态调整表单组件
-// watch(
-//   () => formState.value.orderType,
-//   (newValue) => {
-//
-//   }
-// );
-
 // switch 是否指定预约时间，为true则启用datePicker
 // datePicker 禁用过去时间
 const disabledDates = (current: Dayjs) => {
   // 禁用未来6天时间
-  // return current && current < dayjs().add(6, "day");
-  return current && current < dayjs().subtract(1, "day");
+  return current && current < dayjs().add(6, "day");
+  // 禁用过去时间
+  // return current && current < dayjs().subtract(1, "day");
 };
 
 // 用于滑块的绑定值，预约场地时间范围
@@ -69,7 +120,6 @@ watch(slider_timeRange, (newValue) => {
   }, 1000);
   slider_watcher(newValue);
 });
-
 const slider_marks: Record<number, number> = {
   0: 13,
   20: 14,

@@ -10,9 +10,6 @@ const routes = [
     path: "/form",
     name: "form",
     component: Form,
-    props: (route: { params: { res: string } }) => {
-      orderPlan: route.params.res;
-    },
   },
 ];
 
