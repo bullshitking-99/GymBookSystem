@@ -14,17 +14,25 @@ const userInfo = ref({
 });
 const router = useRouter();
 
-// 组件加载时 focus account_input
+// 获取子组件input实例
 const account_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
-onMounted(() => {
-  account_input.value?.input_focus();
-});
+const password_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
 
 // account_input 按钮点击方法 focus password_input
-const password_input = ref<InstanceType<typeof inputWithBtn> | null>(null);
-const inputSwitch = (account: string) => {
+const inputSwitch = () => {
   password_input.value?.input_focus();
 };
+
+onMounted(() => {
+  // 当localStorage中存在account时自动提取
+  const account = localStorage.getItem("account");
+  if (account !== null) {
+    userInfo.value.account = account;
+    inputSwitch();
+  } else {
+    account_input.value?.input_focus();
+  }
+});
 
 // 页面声明及状态广播
 const declaration: Ref<string> = ref("本系统纯属自娱自乐");
@@ -57,6 +65,8 @@ const loginHandler = (password: string) => {
       declaration.value = res.message;
       if (res.code === 2000) {
         router.push("/form");
+        // 将账号存至localStorage中，下次直接提
+        localStorage.setItem("account", userInfo.value.account);
       }
     })
     .catch(() => {
