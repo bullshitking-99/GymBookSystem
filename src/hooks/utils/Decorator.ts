@@ -7,6 +7,7 @@ export function debounce(func: Function, delay: number): Function {
   // 记录上一次调度标识
   let lastTimerId: number;
 
+  // 这里加this是因为ts需要知道this是啥，实际执行中这个this是一个隐式参数，跟没有一样
   return function (this: object, ...args: any) {
     // 取消上一次调度，若调度已执行，clearTimeout无副作用
     clearTimeout(lastTimerId);

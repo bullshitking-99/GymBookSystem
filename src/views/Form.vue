@@ -1,6 +1,6 @@
 <!-- 表单页，收集用户信息与设置参数 -->
 <script lang="ts" setup>
-import { Ref, ref, watch } from "vue";
+import { onUpdated, Ref, ref, watch } from "vue";
 import dayjs, { Dayjs } from "dayjs";
 import { IformState } from "../@types/form";
 import UseApi, { useLocalStorage } from "../hooks/api/useApi";
@@ -45,7 +45,7 @@ const OrderPlan = "OrderPlan";
 
       // token过期则需要登录
       if (res[0].code === 2001) {
-        message.warn("获取预约信息失败，请重新登录");
+        message.warn("登录状态过期，请重新登录");
         router.push("/");
       }
       // 成功请求则将数据存入session中，更新表单状态
@@ -67,7 +67,7 @@ const OrderPlan = "OrderPlan";
    * 需要分隔一下数据环境，存于pinia中，并使用session进行持久化存储
    */
   function setFormState(): void {
-    console.log("form update!");
+    // console.log("form update!");
   }
 })();
 
@@ -83,7 +83,7 @@ const formState = ref<IformState>({
   bmt_finishTime: 40,
   prioritySites: [],
   isOrderWeekend: true,
-  enhanceMode: true,
+  enhanceMode: false,
 });
 
 // 开启预约开关，控制全局表单是否可选
@@ -106,20 +106,28 @@ const slider_timeRange = ref<number[]>([
 // 警告框提示预约时间限制
 const isAlert = ref(false);
 // 监听用户滑动滑块
-watch(slider_timeRange, (newValue) => {
-  // 添加防抖
-  const slider_watcher = debounce((newValue: Array<number>) => {
-    [formState.value.bmt_beginTime, formState.value.bmt_finishTime] = newValue;
-    const durationTime = (newValue[1] - newValue[0]) / 20;
 
-    if (durationTime > 2 || durationTime == 0) {
-      isAlert.value = true;
-    } else {
-      isAlert.value = false;
-    }
-  }, 1000);
+/* 预约时间警告框展示 */
+/* ---------------------------------------------------------------------- */
+// 根据滑块值控制警告栏是否出现
+let showAlert: Function = (newValue: Array<number>): void => {
+  [formState.value.bmt_beginTime, formState.value.bmt_finishTime] = newValue;
+  const durationTime = (newValue[1] - newValue[0]) / 20;
+
+  if (durationTime > 2 || durationTime == 0) {
+    isAlert.value = true;
+  } else {
+    isAlert.value = false;
+  }
+};
+// 添加防抖
+let slider_watcher = debounce(showAlert, 1500);
+// 监听滑块滑动
+watch(slider_timeRange, (newValue) => {
   slider_watcher(newValue);
 });
+/* ---------------------------------------------------------------------- */
+
 const slider_marks: Record<number, number> = {
   0: 13,
   20: 14,
