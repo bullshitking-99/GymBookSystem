@@ -16,6 +16,9 @@ const router = useRouter();
 const OrderPlan = "OrderPlan";
 
 // 请求预约信息，更新表单状态
+/* --------------------------------------------------------------------------------- */
+const spinning = ref(false);
+
 (function UpdateForm(): void {
   // 判断session-OrderPlan是否存在
   const hasOrderPlan: boolean = sessionStorage.getItem(OrderPlan) !== null;
@@ -36,12 +39,14 @@ const OrderPlan = "OrderPlan";
         getOrderPlan("羽毛球"),
       ];
 
-      // loading start
+      // spin start
+      spinning.value = true;
 
       const res = await Promise.all(orderRequest);
       console.log(res);
 
-      // loading end
+      // spin end
+      spinning.value = false;
 
       // token过期则需要登录
       if (res[0].code === 2001) {
@@ -70,6 +75,7 @@ const OrderPlan = "OrderPlan";
     // console.log("form update!");
   }
 })();
+/* --------------------------------------------------------------------------------- */
 
 // 表单控制变量
 const formState = ref<IformState>({
@@ -294,116 +300,118 @@ const submitForm = () => {
 </script>
 
 <template>
-  <a-form
-    :model="formState"
-    :label-col="{ span: 4, offset: 1 }"
-    :wrapper-col="{ span: 15, offset: 1 }"
-    autocomplete="off"
-  >
-    <a-form-item label="开启预约">
-      <a-switch
-        v-model:checked="formState.isOrder"
-        @click="isDisabled = !isDisabled"
-        checked-children="开"
-        un-checked-children="关"
-      ></a-switch>
-    </a-form-item>
-    <a-form-item label="选择场馆">
-      <a-radio-group v-model:value="formState.orderType" button-style="solid">
-        <a-radio-button value="健身房">健身房</a-radio-button>
-        <a-radio-button value="羽毛球">羽毛球</a-radio-button>
-      </a-radio-group>
-    </a-form-item>
-    <a-form-item label="指定预约">
-      <a-switch
-        v-model:checked="formState.isAssignDate"
-        :disabled="isDisabled"
-        checked-children="是"
-        un-checked-children="否"
-      ></a-switch>
-      <a-date-picker
-        placeholder="将仅预约该日期"
-        v-model:value="formState.date"
-        inputReadOnly
-        :disabled-date="disabledDates"
-        :disabled="isDisabled || !formState.isAssignDate"
-      ></a-date-picker>
-    </a-form-item>
-    <a-form-item label="预约时间">
-      <a-slider
-        v-if="formState.orderType === '羽毛球'"
-        v-model:value="slider_timeRange"
-        range
-        :disabled="isDisabled"
-        :marks="slider_marks"
-        :step="null"
-        :tooltipVisible="false"
-      />
-      <a-radio-group
-        :disabled="isDisabled"
-        v-model:value="GymBookingTime"
-        v-if="formState.orderType === '健身房'"
-        button-style="solid"
-      >
-        <a-radio-button value="[12,13]">12:00-13:30</a-radio-button>
-        <a-radio-button value="[13,15]">13:50-15:20</a-radio-button>
-        <a-radio-button value="[15,17]">15:40-17:10</a-radio-button>
-        <a-radio-button value="[17,19]">17:30-19:00</a-radio-button>
-      </a-radio-group>
-      <a-alert
-        v-if="isAlert && formState.orderType === '羽毛球'"
-        message="预约时间应为1-2小时"
-        type="warning"
-        show-icon
-      ></a-alert>
-    </a-form-item>
+  <a-spin :spinning="spinning" tip="正在更新您的预约信息..." :delay="0">
+    <a-form
+      :model="formState"
+      :label-col="{ span: 4, offset: 1 }"
+      :wrapper-col="{ span: 15, offset: 1 }"
+      autocomplete="off"
+    >
+      <a-form-item label="开启预约">
+        <a-switch
+          v-model:checked="formState.isOrder"
+          @click="isDisabled = !isDisabled"
+          checked-children="开"
+          un-checked-children="关"
+        ></a-switch>
+      </a-form-item>
+      <a-form-item label="选择场馆">
+        <a-radio-group v-model:value="formState.orderType" button-style="solid">
+          <a-radio-button value="健身房">健身房</a-radio-button>
+          <a-radio-button value="羽毛球">羽毛球</a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item label="指定预约">
+        <a-switch
+          v-model:checked="formState.isAssignDate"
+          :disabled="isDisabled"
+          checked-children="是"
+          un-checked-children="否"
+        ></a-switch>
+        <a-date-picker
+          placeholder="将仅预约该日期"
+          v-model:value="formState.date"
+          inputReadOnly
+          :disabled-date="disabledDates"
+          :disabled="isDisabled || !formState.isAssignDate"
+        ></a-date-picker>
+      </a-form-item>
+      <a-form-item label="预约时间">
+        <a-slider
+          v-if="formState.orderType === '羽毛球'"
+          v-model:value="slider_timeRange"
+          range
+          :disabled="isDisabled"
+          :marks="slider_marks"
+          :step="null"
+          :tooltipVisible="false"
+        />
+        <a-radio-group
+          :disabled="isDisabled"
+          v-model:value="GymBookingTime"
+          v-if="formState.orderType === '健身房'"
+          button-style="solid"
+        >
+          <a-radio-button value="[12,13]">12:00-13:30</a-radio-button>
+          <a-radio-button value="[13,15]">13:50-15:20</a-radio-button>
+          <a-radio-button value="[15,17]">15:40-17:10</a-radio-button>
+          <a-radio-button value="[17,19]">17:30-19:00</a-radio-button>
+        </a-radio-group>
+        <a-alert
+          v-if="isAlert && formState.orderType === '羽毛球'"
+          message="预约时间应为1-2小时"
+          type="warning"
+          show-icon
+        ></a-alert>
+      </a-form-item>
 
-    <a-form-item v-if="formState.orderType === '羽毛球'" label="优先场地">
-      <a-select
-        placeholder="也可以不选哦"
-        v-model:value="formState.prioritySites"
-        mode="multiple"
-        :options="select_options"
-        :disabled="isDisabled"
-      ></a-select>
-    </a-form-item>
+      <a-form-item v-if="formState.orderType === '羽毛球'" label="优先场地">
+        <a-select
+          placeholder="也可以不选哦"
+          v-model:value="formState.prioritySites"
+          mode="multiple"
+          :options="select_options"
+          :disabled="isDisabled"
+        ></a-select>
+      </a-form-item>
 
-    <a-form-item v-if="formState.orderType === '健身房'" label="增强模式">
-      <a-switch
-        :disabled="isDisabled"
-        v-model:checked="formState.enhanceMode"
-        checked-children="预约剩余时段"
-        un-checked-children="仅预约该时段"
-      ></a-switch>
-    </a-form-item>
+      <a-form-item v-if="formState.orderType === '健身房'" label="增强模式">
+        <a-switch
+          :disabled="isDisabled"
+          v-model:checked="formState.enhanceMode"
+          checked-children="预约剩余时段"
+          un-checked-children="仅预约该时段"
+        ></a-switch>
+      </a-form-item>
 
-    <a-form-item label="预约周末">
-      <a-switch
-        :disabled="isDisabled"
-        v-model:checked="formState.isOrderWeekend"
-        :checked-children="
-          formState.orderType === '健身房'
-            ? `求道之人不问寒暑`
-            : `精诚所至金石为开`
-        "
-        :un-checked-children="
-          formState.orderType === '健身房' ? '不，劳逸结合' : '不，家境贫寒'
-        "
-      ></a-switch>
-    </a-form-item>
-    <div class="submitBtn">
-      <a-button
-        type="primary"
-        shape="round"
-        style="width: 100%"
-        block
-        @click="submitForm"
-      >
-        <span v-if="!isSpin">提交</span>
-        <a-spin :indicator="indicator" v-else :delay="delayTime"></a-spin>
-      </a-button>
-    </div>
-  </a-form>
+      <a-form-item label="预约周末">
+        <a-switch
+          :disabled="isDisabled"
+          v-model:checked="formState.isOrderWeekend"
+          :checked-children="
+            formState.orderType === '健身房'
+              ? `求道之人不问寒暑`
+              : `精诚所至金石为开`
+          "
+          :un-checked-children="
+            formState.orderType === '健身房' ? '不，劳逸结合' : '不，家境贫寒'
+          "
+        ></a-switch>
+      </a-form-item>
+      <div class="submitBtn">
+        <a-button
+          type="primary"
+          shape="round"
+          style="width: 100%"
+          block
+          @click="submitForm"
+        >
+          <span v-if="!isSpin">提交</span>
+          <a-spin :indicator="indicator" v-else :delay="delayTime"></a-spin>
+        </a-button>
+      </div>
+    </a-form>
+  </a-spin>
 </template>
 
 <style scoped lang="scss">
