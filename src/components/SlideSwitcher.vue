@@ -37,20 +37,6 @@ function changeOption(event: Event) {
     >
       {{ option }}
     </div>
-    <!-- <div
-      class="option"
-      @click="choosed = option_1"
-      :class="{ choosed: choosed === option_1 }"
-    >
-      {{ option_1 }}
-    </div>
-    <div
-      class="option"
-      @click="choosed = option_2"
-      :class="{ choosed: choosed === option_2 }"
-    >
-      {{ option_2 }}
-    </div> -->
   </button>
 </template>
 
