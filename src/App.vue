@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import SlideSwitcher from "./components/SlideSwitcher.vue";
 import { message } from "ant-design-vue";
 import { onMounted, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
@@ -33,6 +34,7 @@ main {
   justify-items: center;
   align-items: center;
   background: rgb(203, 210, 240);
+  // background-color: rgba($color: rgb(224, 208, 208), $alpha: 1);
   .container {
     width: 60%;
     min-height: 60vh;
@@ -42,6 +44,7 @@ main {
     border-radius: 24px;
     padding: 48px 28px;
     background-color: rgb(245, 246, 252);
+    // background-color: burlywood;
 
     /* 标题 */
     h1 {

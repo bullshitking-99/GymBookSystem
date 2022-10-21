@@ -1,0 +1,108 @@
+<!-- 
+    本质为tabBar，样式上为点击切换增加滑块滑动效果
+    props：一个tabBar options数组，作为tabBar中的点击选项，目前组件CSS不完善，仅支持两个option
+    emits：options点击事件，返回点击的option
+ -->
+<script lang="ts" setup>
+import { ref } from "vue";
+
+// 通过泛型参数来定义 props 的类型
+const props = defineProps<{
+  options: Array<string>;
+}>();
+
+const emit = defineEmits(["changeOption"]);
+
+const choosed = ref(props.options[0]);
+
+function changeOption(event: Event) {
+  const option = (event.target as HTMLElement).innerHTML;
+  choosed.value = option;
+  emit("changeOption", option);
+}
+</script>
+
+<template>
+  <button id="container">
+    <button
+      id="slider"
+      :class="[choosed === props.options[0] ? 'ChooseLeft' : 'ChooseRight']"
+    ></button>
+    <div
+      v-for="option in props.options"
+      :key="option"
+      class="option"
+      @click="changeOption"
+      :class="{ choosed: choosed === option }"
+    >
+      {{ option }}
+    </div>
+    <!-- <div
+      class="option"
+      @click="choosed = option_1"
+      :class="{ choosed: choosed === option_1 }"
+    >
+      {{ option_1 }}
+    </div>
+    <div
+      class="option"
+      @click="choosed = option_2"
+      :class="{ choosed: choosed === option_2 }"
+    >
+      {{ option_2 }}
+    </div> -->
+  </button>
+</template>
+
+<style scoped lang="scss">
+#container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  border-radius: 48px;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  // 毛玻璃
+  backdrop-filter: blur(5px);
+  height: 50px;
+  transition: all 0.5s;
+  transform: scale(1.05);
+
+  #slider {
+    position: absolute;
+    width: 90px;
+    border: none;
+    border-radius: 48px;
+    height: 80%;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: -100;
+
+    transition: all 0.3s;
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+  .ChooseLeft {
+    transform: translateX(-52px);
+  }
+  .ChooseRight {
+    transform: translateX(52px);
+  }
+
+  .option {
+    padding: 15px 30px;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 700;
+    transition: all 0.3s linear;
+    cursor: pointer;
+  }
+  .choosed {
+    color: black;
+    font-weight: bold;
+    transform-origin: center;
+    transform: scale(1.1);
+  }
+}
+</style>

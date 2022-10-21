@@ -23,5 +23,6 @@ declare module '@vue/runtime-core' {
     InputWithBtn: typeof import('./src/components/inputWithBtn.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SlideSwitcher: typeof import('./src/components/SlideSwitcher.vue')['default']
   }
 }

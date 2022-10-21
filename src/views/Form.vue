@@ -104,18 +104,27 @@ const disabledDates = (current: Dayjs) => {
   // return current && current < dayjs().subtract(1, "day");
 };
 
+// 滑块-羽毛球预约时间
+/* ---------------------------------------------------------------------- */
+// 滑块进度条
+const slider_marks: Record<number, number> = {
+  0: 13,
+  20: 14,
+  40: 15,
+  60: 16,
+  80: 17,
+  100: 18,
+};
 // 用于滑块的绑定值，预约场地时间范围
 const slider_timeRange = ref<number[]>([
   formState.value.bmt_beginTime,
   formState.value.bmt_finishTime,
 ]);
-// 警告框提示预约时间限制
-const isAlert = ref(false);
-// 监听用户滑动滑块
 
-/* 预约时间警告框展示 */
-/* ---------------------------------------------------------------------- */
-// 根据滑块值控制警告栏是否出现
+// 警告框提示预约时间限制
+/* ----------------------------------- */
+const isAlert = ref(false);
+
 let showAlert: Function = (newValue: Array<number>): void => {
   [formState.value.bmt_beginTime, formState.value.bmt_finishTime] = newValue;
   const durationTime = (newValue[1] - newValue[0]) / 20;
@@ -132,18 +141,10 @@ let slider_watcher = debounce(showAlert, 1500);
 watch(slider_timeRange, (newValue) => {
   slider_watcher(newValue);
 });
+/* ----------------------------------- */
+
+// 健身房预约时段
 /* ---------------------------------------------------------------------- */
-
-const slider_marks: Record<number, number> = {
-  0: 13,
-  20: 14,
-  40: 15,
-  60: 16,
-  80: 17,
-  100: 18,
-};
-
-// 健身房预约时段单选
 const GymBookingTime = computed<string>({
   get() {
     return JSON.stringify([
@@ -158,6 +159,7 @@ const GymBookingTime = computed<string>({
 });
 
 // 优先场地 列表值
+/* ---------------------------------------------------------------------- */
 const select_options = ref(
   [...Array(18)].map((_, index) => ({
     value: index + 1,
@@ -175,7 +177,8 @@ const indicator = h(LoadingOutlined, {
 });
 const delayTime = 300;
 
-// 提交btn click事件
+// Submit Button 点击
+/* ---------------------------------------------------------------------- */
 const submitForm = () => {
   // 显示等待状态spin
   isSpin.value = true;
