@@ -16,9 +16,7 @@ onBeforeMount(() => {
 <template>
   <main>
     <div class="container">
-      <!-- <h1>Gym-Booking-System</h1>
-      <router-view></router-view> -->
-      <SlideSwitcher :options="['健身房', '羽毛球']"></SlideSwitcher>
+      <router-view></router-view>
     </div>
   </main>
 </template>
@@ -44,8 +42,8 @@ main {
     box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.15);
     border-radius: 24px;
     padding: 48px 28px;
-    // background-color: rgb(245, 246, 252);
-    background-color: burlywood;
+    background-color: rgb(245, 246, 252);
+    // background-color: burlywood;
 
     /* 标题 */
     h1 {

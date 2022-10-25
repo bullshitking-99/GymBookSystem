@@ -57,7 +57,7 @@ const spinning = ref(false);
       if (res[0].code === 2000) {
         // 返回data为空-新用户-使用表单初始状态
         // data不为空-老用户-更新表单状态
-        if (res[0].data !== []) {
+        if (!res[0].data) {
           // setSession 将pinia持久化存储则不需要这一步
           sessionStorage.setItem(OrderPlan, JSON.stringify(res));
           // UpdateForm
@@ -310,6 +310,12 @@ const submitForm = () => {
       :wrapper-col="{ span: 15, offset: 1 }"
       autocomplete="off"
     >
+      <SlideSwitcher
+        :options="['健身房', '羽毛球']"
+        @change="(e:'健身房'|'羽毛球')=>formState.orderType = e"
+      ></SlideSwitcher>
+      <div style="height: 50px"></div>
+
       <a-form-item label="开启预约">
         <a-switch
           v-model:checked="formState.isOrder"
@@ -318,12 +324,12 @@ const submitForm = () => {
           un-checked-children="关"
         ></a-switch>
       </a-form-item>
-      <a-form-item label="选择场馆">
+      <!-- <a-form-item label="选择场馆">
         <a-radio-group v-model:value="formState.orderType" button-style="solid">
           <a-radio-button value="健身房">健身房</a-radio-button>
           <a-radio-button value="羽毛球">羽毛球</a-radio-button>
         </a-radio-group>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item label="指定预约">
         <a-switch
           v-model:checked="formState.isAssignDate"

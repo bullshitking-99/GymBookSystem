@@ -11,14 +11,14 @@ const props = defineProps<{
   options: Array<string>;
 }>();
 
-const emit = defineEmits(["changeOption"]);
+const emit = defineEmits(["change"]);
 
 const choosed = ref(props.options[0]);
 
-function changeOption(event: Event) {
+function change(event: Event) {
   const option = (event.target as HTMLElement).innerHTML;
   choosed.value = option;
-  emit("changeOption", option);
+  emit("change", option);
 }
 </script>
 
@@ -32,7 +32,7 @@ function changeOption(event: Event) {
       v-for="option in props.options"
       :key="option"
       class="option"
-      @click="changeOption"
+      @click="change"
       :class="{ choosed: choosed === option }"
     >
       {{ option }}
@@ -49,7 +49,9 @@ function changeOption(event: Event) {
   margin: 0 auto;
   border-radius: 48px;
   border: none;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 1);
+  // background-color: #1890ff;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.15);
   // 毛玻璃
   backdrop-filter: blur(5px);
   height: 50px;
@@ -62,7 +64,8 @@ function changeOption(event: Event) {
     border: none;
     border-radius: 48px;
     height: 80%;
-    background-color: rgba(255, 255, 255, 1);
+    // background-color: rgba(255, 255, 255, 1);
+    background-color: #1890ff;
     z-index: -100;
 
     transition: all 0.3s;
@@ -79,16 +82,18 @@ function changeOption(event: Event) {
 
   .option {
     padding: 15px 30px;
-    color: rgba(0, 0, 0, 0.7);
+    // color: rgba(0, 0, 0, 0.7);
+    color: gray;
     font-weight: 700;
     transition: all 0.3s linear;
     cursor: pointer;
   }
   .choosed {
-    color: black;
+    // color: black;
+    color: white;
     font-weight: bold;
-    transform-origin: center;
-    transform: scale(1.1);
+    // transform-origin: center;
+    // transform: scale(1.1);
   }
 }
 </style>

@@ -81,6 +81,7 @@ const loginHandler = (password: string) => {
 </script>
 
 <template>
+  <h1>Gym-Booking-System</h1>
   <h2>Login</h2>
 
   <div style="height: 2rem"></div>
