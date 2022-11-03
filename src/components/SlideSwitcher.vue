@@ -24,10 +24,10 @@ function change(event: Event) {
 
 <template>
   <button id="container">
-    <button
+    <div
       id="slider"
       :class="[choosed === props.options[0] ? 'ChooseLeft' : 'ChooseRight']"
-    ></button>
+    ></div>
     <div
       v-for="option in props.options"
       :key="option"
@@ -57,6 +57,15 @@ function change(event: Event) {
   height: 50px;
   transition: all 0.5s;
   transform: scale(1.05);
+  user-select: none;
+  perspective: 500px;
+
+  // 点击反馈-缩小
+  // 需在此处单独设置 transition: transform
+  &:active #slider {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
 
   #slider {
     position: absolute;
@@ -67,17 +76,15 @@ function change(event: Event) {
     // background-color: rgba(255, 255, 255, 1);
     background-color: #1890ff;
     z-index: -100;
-
-    transition: all 0.3s;
-    &:active {
-      transform: scale(0.9);
-    }
+    // 存在多个transition时，需要写在一起，写多个transition会覆盖导致前者失效
+    // 此处active事件结束后，transition：transform让滑块平滑恢复原尺寸
+    transition: left 0.8s cubic-bezier(0.82, 0.12, 0.18, 0.88), transform 0.3s;
   }
   .ChooseLeft {
-    transform: translateX(-52px);
+    left: 6px;
   }
   .ChooseRight {
-    transform: translateX(52px);
+    left: 110px;
   }
 
   .option {
@@ -85,7 +92,7 @@ function change(event: Event) {
     // color: rgba(0, 0, 0, 0.7);
     color: gray;
     font-weight: 700;
-    transition: all 0.3s linear;
+    transition: all 0.8s linear;
     cursor: pointer;
   }
   .choosed {
