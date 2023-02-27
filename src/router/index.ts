@@ -5,7 +5,11 @@ import Form from "../views/Form.vue";
 const history = createWebHistory();
 
 const routes = [
-  { path: "/", component: Login },
+  {
+    path: "/",
+    redirect: "/login",
+  },
+  { path: "/login", name: "login", component: Login },
   {
     path: "/form",
     name: "form",
