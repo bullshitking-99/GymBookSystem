@@ -2,14 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login.vue";
 import Form from "../views/Form.vue";
 
-const history = createWebHistory();
+const history = createWebHistory("/GymBookSystem/");
 
 const routes = [
-  {
-    path: "/",
-    redirect: "/login",
-  },
-  { path: "/login", name: "login", component: Login },
+  { path: "/", name: "login", component: Login },
   {
     path: "/form",
     name: "form",

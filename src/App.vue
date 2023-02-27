@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import SlideSwitcher from "./components/SlideSwitcher.vue";
-import { message } from "ant-design-vue";
 import { onMounted, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import useApi, { useLocalStorage } from "../src/hooks/api/useApi";
