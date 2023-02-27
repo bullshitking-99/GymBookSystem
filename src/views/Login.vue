@@ -122,6 +122,9 @@ const loginHandler = (password: string) => {
 </template>
 
 <style scoped lang="scss">
+h1 {
+  text-align: center;
+}
 h2 {
   font-size: 24px;
   text-align: center;
