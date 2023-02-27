@@ -11,7 +11,7 @@ export default defineConfig({
       resolvers: [AntDesignVueResolver()],
     }),
   ],
-  base: "/GymBookSystem/",
+  base: "/GymBookSystem",
   server: {
     open: true,
   },
