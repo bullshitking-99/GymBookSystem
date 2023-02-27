@@ -78,7 +78,7 @@ function change(event: Event) {
     z-index: -100;
     // 存在多个transition时，需要写在一起，写多个transition会覆盖导致前者失效
     // 此处active事件结束后，transition：transform让滑块平滑恢复原尺寸
-    transition: left 0.8s cubic-bezier(0.82, 0.12, 0.18, 0.88), transform 0.3s;
+    transition: left 0.5s cubic-bezier(0.82, 0.12, 0.18, 0.88), transform 0.3s;
   }
   .ChooseLeft {
     left: 6px;
@@ -92,7 +92,7 @@ function change(event: Event) {
     // color: rgba(0, 0, 0, 0.7);
     color: gray;
     font-weight: 700;
-    transition: all 0.8s linear;
+    transition: all 0.5s linear;
     cursor: pointer;
   }
   .choosed {
